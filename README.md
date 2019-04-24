@@ -2,12 +2,6 @@
 
 ## Things to do:
 
-* Find cellular plan for receiving API data
+* Document code
 
-* New plan for wire connections
-
-* Pi Breakout
-
-* Solve issue with pump potentially not turning on
-
-* Work on the code
+* Start working on connecting moisture sensor readings and weather data logic to open and close the pump
