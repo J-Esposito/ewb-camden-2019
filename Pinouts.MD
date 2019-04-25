@@ -10,7 +10,7 @@
 - Odd irregularity: Pin 11 maps to Pin 17 in software
 
 ## Sensor:
-- Yellow: SDA
-- White: SC
+- Yellow: SDA aka Pin 3
+- White: SC aka Pin 5
 - VCC: Black
 - Ground: Red
