@@ -1,8 +1,9 @@
 import datetime
 import requests
 
-opt_level_to_maintain = 10
-base_level_to_maintain = 10
+#Moisture sensor ranges from 200 (very dry) to 2000 (very wet)
+opt_level_to_maintain = 700
+base_level_to_maintain = 700
 
 def get_weather():
     response = requests.get("http://api.openweathermap.org/data/2.5/forecast?id=4501018&APPID=66387745b51f3f23fbc5412ce292097f")
@@ -12,7 +13,12 @@ def get_weather():
 def evaluate_logic(weather_data,water_level):
 
     day = datetime.datetime.today().weekday()
-    amt_rain = weather_data[day]
+    
+    if weather_data is not None:
+        amt_rain = weather_data[day]
+    else:
+        amt_rain = -1
+        
     if amt_rain > 0:
         if water_level < base_level_to_maintain:
             return True

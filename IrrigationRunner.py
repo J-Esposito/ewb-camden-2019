@@ -5,14 +5,35 @@ Created on Tue Dec  4 21:00:10 2018
 @author: Justin
 """
 
-import json
-import pprint
+import logic.py as logic
 
-f = open("sample_data.json")
+import RPi.GPIO as GPIO
+from board import SCL, SDA
+import busio
+import time
 
-weather_data = json.load(f)
-#for x in weather_data['list']:
-#    pprint.pprint(x)
+from adafruit_seesaw.seesaw import Seesaw
+
+#create objects
+moisture_logic = logic()
+i2c_bus = busio.I2C(SCL, SDA)
+ss = Seesaw(i2c_bus, addr=0x36)
+
+#set up pi
+GPIO.cleanup()
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17, GPIO.OUT)
+
+while True:
+    touch = ss.moisture_read()
+    shouldWater = logic.evaluate_logic(None, touch)
+
+    print("Moisture: " + str(touch) + ". Should water?" + str(shouldWater))
     
-weather_data = weather_data['list'][1]
-pprint.pprint(weather_data)
+    if shouldWater:
+        GPIO.output(17, 0)
+    else:
+        GPIO.output(17, 1)
+        
+    time.sleep(1)
