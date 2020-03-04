@@ -1,5 +1,11 @@
-import datetime
+from datetime import date
 import requests
+import time
+from board import SCL, SDA
+import busio
+from adafruit_seesaw.seesaw import Seesaw
+import RPi.GPIO as GPIO
+
 
 #Moisture sensor ranges from 200 (very dry) to 2000 (very wet)
 opt_level_to_maintain = 700
@@ -10,7 +16,14 @@ shed_sqr_inch = 3456
 threshRain = None
 waterGainThresh = None
 
-
+def set_sensors():
+    i2c_bus = busio.I2C(SCL, SDA)
+    ss = Seesaw(i2c_bus, addr=0x36)
+    GPIO.cleanup()
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(17, GPIO.OUT)
+    return ss
 
 def get_weather():
     R = requests.get("https://api.weather.com/v2/turbo/vt1dailyForecast?apiKey=d522aa97197fd864d36b418f39ebb323&format=json&geocode=39.95%2C-75.12&language=en-US&units=e") 
@@ -64,8 +77,15 @@ def evaluate_logic(weather_data,water_level):
             return True              
  
 def runner():
+    day = date.today()
+    ss = set_sensors()
+    weather_data = get_weather()
     While True:
-        if #New Day:
-            #Get New Weather Data
+        water_level = ss.moisture_read()
+        if day != date.today() #New Day:
             weather_data = get_weather()
-        evaluate_logic(weather_data,water_level)
+            day = date.today()
+       if evaluate_logic(weather_data,water_level):
+           GPIO.output(17, 1)
+       else:
+           GPIO.output(17, 0)
