@@ -38,38 +38,30 @@ def evaluate_logic(weather_data,water_level):
         amt_rain = -1
     if amt_rain > 1:        #Yes Raining
         if water_level > base_level_to_maintain: #check amt
-            return False
+            if water_level > optimal_level_to_maintain:
+                return False
+            else:
+                if expected_water_gain > waterGainThresh:
+                    return True
+                else:
+                 return False
         else:
             if rainAmnt > threshRain:
                 return False
             else:
-                if expected_water_gain > waterGainTresh
-                    if waterlevel < opt_level_to_maintain:
-                        return True
-                    else:
-                        return False
-                else:
-                    if waterlevel < base_level_to_maintain:
-                        return True
-                    else:
-                        return False
-                 
+                return True     
+                            
     else: #Right side of tree
         if water_level > base_level_to_maintain:
-            return False
-        else:
-            if expected_water_gain < waterGainThresh #checking if there is enough water to water to opt amt
-                if waterlevel < base_level_to_maintain:
+            if water_level > optimal_level_to_maintain:
+                return False
+            else:
+                if expected_water_gain > waterGainThresh:
                     return True
                 else:
-                    return False
-            else
-                if water_level < opt_level_to_maintain
-                    return true
-                else
-                    return false 
-                   
-                
+                 return False
+        else:
+            return True              
  
 def runner():
     While True:
@@ -77,4 +69,3 @@ def runner():
             #Get New Weather Data
             weather_data = get_weather()
         evaluate_logic(weather_data,water_level)
-           
